@@ -1,0 +1,13 @@
+// Siga as instruções para iniciar o serviço
+
+0) iniciar o xamp e convigurar .env
+
+// Criar a base de dados
+1) npx sequelize-cli db:create
+
+// Criar tabelas:
+2) npx sequelize-cli db:migrate
+
+// Gerar dados pré-salvos:
+3) npx sequelize-cli db:seed:all
+
