@@ -7,61 +7,61 @@ module.exports = {
       [
         {
           id: 1,
-          title: "Limpeza",
+          title: "Beleza e Higiene",
           icon: null,
           status: true
         },
         {
           id: 2,
-          title: "Eletrônicos",
+          title: "Cozinha, Jardim e Animais",
           icon: null,
           status: true
         },
         {
           id: 3,
-          title: "Jardinagem",
+          title: "Limpeza e Utensílios Domésticos",
           icon: null,
           status: true
         },
         {
           id: 4,
-          title: "Frutas",
+          title: "Padaria, Bolos e Laticínios",
           icon: null,
           status: true
         },
         {
           id: 5,
-          title: "Vegetais",
+          title: "Lanches e Alimentos de Marca",
           icon: null,
           status: true
         },
         {
           id: 6,
-          title: "Para Microondas",
+          title: "Grãos, Óleo e Temperos",
           icon: null,
           status: true
         },
         {
           id: 7,
-          title: "Higiêne",
+          title: "Frutas e Vegetais",
           icon: null,
           status: true
         },
         {
           id: 8,
-          title: "Vestuário",
+          title: "Carnes, Peixes e Ovos",
           icon: null,
           status: true
         },
         {
           id: 9,
-          title: "Escritório",
+          title: "Bebidas",
           icon: null,
           status: true
         },
         {
           id: 10,
-          title: "Brinquedos",
+          title: "Gourmet e Comida Internacional",
           icon: null,
           status: true
         }

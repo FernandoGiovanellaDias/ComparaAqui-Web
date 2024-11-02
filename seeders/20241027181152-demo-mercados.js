@@ -34,26 +34,6 @@ module.exports = {
           id: 6,
           name: "Cencosud Brasil",
           status: true
-        },
-        {
-          id: 7,
-          name: "Atacadão Dia a Dia",
-          status: true
-        },
-        {
-          id: 8,
-          name: "Atacadão",
-          status: true
-        },
-        {
-          id: 9,
-          name: "Kroger",
-          status: true
-        },
-        {
-          id: 10,
-          name: "Coop",
-          status: true
         }
       ]
     );
