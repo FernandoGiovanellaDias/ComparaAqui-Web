@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Mercado',
-        tableName: 'mercado'
+        tableName: 'mercado',
+        timestamps: false
     });
     return Mercado;
 };

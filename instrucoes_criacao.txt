@@ -1,6 +1,6 @@
 // Siga as instruções para iniciar o serviço
 
-0) iniciar o xamp e convigurar .env
+0) convigurar .env
 
 // Criar a base de dados
 1) npx sequelize-cli db:create

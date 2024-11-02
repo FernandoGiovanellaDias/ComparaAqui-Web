@@ -1,4 +1,4 @@
-const { where } = require("sequelize");
+const { where, Sequelize } = require("sequelize");
 const { Produto, Usuario } = require("../../models");
 const moment = require("moment");
 
@@ -78,24 +78,22 @@ module.exports = {
     return res.json(produtos);
   },
 
-  async recuperarProdutos(req, res) {
-    let produtos = [];
-    produtos = await Produto.findAll();
-
-    return res.json(produtos);
-  },
-
   async recuperarProdutosPorCategoriaMercado(req, res) {
     let produtos = [];
     let where = { status: true };
-    if (req.params.id_categoria) {
-      where["id_categoria"] = req.params.id_categoria;
+    if (req.body.id_categoria) {
+      where["id_categoria"] = req.body.id_categoria;
     }
-    if (req.params.id_mercado) {
-      where["id_mercado"] = req.params.id_mercado;
+    if (req.body.id_mercado) {
+      where["id_mercado"] = req.body.id_mercado;
     }
+
+    where["status"] = req.body.status ?? true;
+    
     produtos = await Produto.findAll({
+      attributes: [[Sequelize.literal('(array_agg("id"))[1]'), 'id'], 'name', 'id_categoria'],
       where: where,
+      group: ['name', 'id_categoria']
     });
 
     return res.json(produtos);

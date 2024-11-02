@@ -8,24 +8,20 @@ routes.use(cors());
 
 
 
-const SolicitacaoController = require("./src/controllers/SolicitacaoController");
+const CategoriaController = require("./src/controllers/CategoriaController");
+
+routes.get("/v1/recuperarCategorias", CategoriaController.recuperarCategorias);
 
 
-routes.post("/v1/recuperarSolicitacoes", verifyJWT, SolicitacaoController.recuperarSolicitacoes)
-    .post("/v1/Solicitacoes", verifyJWT, SolicitacaoController.criarSolicitacao)
-    .put("/v1/Solicitacoes/:id", verifyJWT, SolicitacaoController.editarSolicitacao)
-    .get("/v1/Solicitacoes/:id", verifyJWT, SolicitacaoController.recuperarSolicitacao)
-    .delete("/v1/Solicitacoes/:id", verifyJWT, SolicitacaoController.deletarSolicitacao);
+const ProdutoController = require("./src/controllers/ProdutoController");
 
+routes.post("/v1/recuperarProdutosPorCategoriaMercado", ProdutoController.recuperarProdutosPorCategoriaMercado);
+    
 
-const UsuarioController = require("./src/controllers/UsuarioController");
+const MercadoController = require("./src/controllers/MercadoController");
 
-
-routes.post("/v1/Usuarios", verifyJWT, UsuarioController.criarUsuario)
-    .put("/v1/Usuarios/:token_account", verifyJWT, UsuarioController.editarUsuario)
-    .get("/v1/Usuarios/:token_account", verifyJWT, UsuarioController.recuperarUsuario)
-    .post("/v1/login", verifyJWT, UsuarioController.login)
-    .delete("/v1/Usuarios/:token_account", verifyJWT, UsuarioController.deletarUsuario);
+routes.post("/v1/recuperarMercadPorProdutos", MercadoController.recuperarMercadPorProdutos)
+    .get("/v1/recuperarMercados", verifyJWT, MercadoController.recuperarMercados);
 
 
 

@@ -26,7 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Categoria',
-        tableName: 'categoria'
+        tableName: 'categoria',
+        timestamps: false
     });
     return Categoria;
 };

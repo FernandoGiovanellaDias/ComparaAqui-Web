@@ -102,7 +102,7 @@ module.exports = {
 
             CREATE OR REPLACE FUNCTION public.buscar_mercados_com_produtos(
                 idsprod integer[])
-                RETURNS TABLE(id_mercado integer, name text, classification text, totalitems integer, totalvalue double precision, itensfaltantes text[]) 
+                RETURNS TABLE(id integer, name text, classification text, "totalItems" integer, "totalValue" double precision, "itensFaltantes" text[]) 
                 LANGUAGE 'plpgsql'
                 COST 100
                 VOLATILE PARALLEL UNSAFE

@@ -1,5 +1,5 @@
-const { where } = require("sequelize");
-const { Mercado, Usuario } = require("../../models");
+const { where, QueryTypes } = require("sequelize");
+const { Mercado, Usuario, sequelize } = require("../../models");
 const moment = require("moment");
 
 
@@ -86,6 +86,26 @@ module.exports = {
 
   async recuperarMercado(req, res) {
     const mercados = await Mercado.findByPk(req.params.id);
+    return res.json(mercados);
+  },
+
+
+  async recuperarMercadPorProdutos(req, res) {
+    let entity = req.body;
+
+    if(entity.id_produtos == undefined || 
+      entity.id_produtos == null || 
+      entity.id_produtos.length == 0){
+        return res.json({ error: false, message: "Não há itens a serem buscados", erros: [] });
+    }
+
+    const filtro = entity.id_produtos.join(", ");
+
+    const mercados = await sequelize.query(`
+      select * FROM buscar_mercados_com_produtos(array[${filtro}]::integer[]);
+      `, {
+      type: QueryTypes.SELECT
+    })
     return res.json(mercados);
   },
 };
