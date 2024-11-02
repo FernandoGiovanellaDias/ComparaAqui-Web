@@ -7,6 +7,67 @@ module.exports = {
       [
         {
           id: 1,
+          title: "Limpeza",
+          icon: null,
+          status: true
+        },
+        {
+          id: 2,
+          title: "Eletrônicos",
+          icon: null,
+          status: true
+        },
+        {
+          id: 3,
+          title: "Jardinagem",
+          icon: null,
+          status: true
+        },
+        {
+          id: 4,
+          title: "Frutas",
+          icon: null,
+          status: true
+        },
+        {
+          id: 5,
+          title: "Vegetais",
+          icon: null,
+          status: true
+        },
+        {
+          id: 6,
+          title: "Para Microondas",
+          icon: null,
+          status: true
+        },
+        {
+          id: 7,
+          title: "Higiêne",
+          icon: null,
+          status: true
+        },
+        {
+          id: 8,
+          title: "Vestuário",
+          icon: null,
+          status: true
+        },
+        {
+          id: 9,
+          title: "Escritório",
+          icon: null,
+          status: true
+        },
+        {
+          id: 10,
+          title: "Brinquedos",
+          icon: null,
+          status: true
+        }
+        /* base maior
+        {
+          id: 1,
           title: "Beleza e Higiene",
           icon: null,
           status: true
@@ -65,6 +126,7 @@ module.exports = {
           icon: null,
           status: true
         }
+          */
       ]
     );
   },
