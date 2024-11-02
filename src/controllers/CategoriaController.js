@@ -75,7 +75,7 @@ module.exports = {
       where: { status: true },
     });
 
-    return res.json(categorias);
+    return res.json({lista : categorias});
   },
 
   async recuperarCategoria(req, res) {

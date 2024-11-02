@@ -15,8 +15,9 @@ routes.get("/v1/recuperarCategorias", CategoriaController.recuperarCategorias);
 
 const ProdutoController = require("./src/controllers/ProdutoController");
 
-routes.post("/v1/recuperarProdutosPorCategoriaMercado", ProdutoController.recuperarProdutosPorCategoriaMercado);
-    
+routes.post("/v1/recuperarProdutosPorCategoriaMercado", ProdutoController.recuperarProdutosPorCategoriaMercado)
+    .post("/v1/detalhamentoPorMercado", ProdutoController.detalhamentoPorMercado);
+
 
 const MercadoController = require("./src/controllers/MercadoController");
 

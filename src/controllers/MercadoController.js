@@ -106,7 +106,7 @@ module.exports = {
       `, {
       type: QueryTypes.SELECT
     })
-    return res.json(mercados);
+    return res.json({lista: mercados});
   },
 };
 

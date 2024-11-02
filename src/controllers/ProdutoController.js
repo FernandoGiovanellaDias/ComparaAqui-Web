@@ -89,14 +89,51 @@ module.exports = {
     }
 
     where["status"] = req.body.status ?? true;
+
+    let whereProdutos = null;
+    if (req.body.id_produtos) {
+      whereProdutos = Sequelize.literal(`name ILIKE ANY (obter_padroes_nome(array[${req.body.id_produtos.join(", ")}]))`);    
+    }
+
+    let allWhere = whereProdutos
+        ? Sequelize.and(where, whereProdutos)
+        : where;
+
     
     produtos = await Produto.findAll({
-      attributes: [[Sequelize.literal('(array_agg("id"))[1]'), 'id'], 'name', 'id_categoria'],
-      where: where,
+      attributes: [[Sequelize.literal('(array_agg("id"))[1]'), 'id'], 'name', [Sequelize.literal('(array_agg("description"))[1]'), 'description'], 'id_categoria'],
+      where: allWhere,
       group: ['name', 'id_categoria']
     });
 
-    return res.json(produtos);
+    return res.json({lista: produtos});
+  },
+
+  
+  async detalhamentoPorMercado(req, res) {
+    let produtos = [];
+    let where = { status: true };
+    if (req.body.id_mercado) {
+      where["id_mercado"] = req.body.id_mercado;
+    }
+
+    where["status"] = req.body.status ?? true;
+
+    let whereProdutos = null;
+    if (req.body.id_produtos) {
+      whereProdutos = Sequelize.literal(`name ILIKE ANY (obter_padroes_nome(array[${req.body.id_produtos.join(", ")}]))`);    
+    }
+
+    let allWhere = whereProdutos
+        ? Sequelize.and(where, whereProdutos)
+        : where;
+
+    
+    produtos = await Produto.findAll({
+      where: allWhere
+    });
+
+    return res.json({lista: produtos});
   },
 
   async recuperarProduto(req, res) {
