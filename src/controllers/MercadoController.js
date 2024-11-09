@@ -1,4 +1,4 @@
-const { where, QueryTypes } = require("sequelize");
+const { where, QueryTypes, Op } = require("sequelize");
 const { Mercado, Usuario, sequelize } = require("../../models");
 const moment = require("moment");
 
@@ -77,10 +77,17 @@ module.exports = {
 
     return res.json(mercados);
   },
-  
+
   async recuperarMercados(req, res) {
+    let entity = req.body;
+    let where = {};
+
+    if (entity.filtro !== undefined && entity.filtro !== null && entity.filtro.length > 0) {
+      where = { name: { [Op.iLike]: `%${entity.filtro}%` } };
+    }
+
     let mercados = [];
-    mercados = await Mercado.findAll();
+    mercados = await Mercado.findAll({ where: where });
     return res.json(mercados);
   },
 
@@ -93,10 +100,10 @@ module.exports = {
   async recuperarMercadPorProdutos(req, res) {
     let entity = req.body;
 
-    if(entity.id_produtos == undefined || 
-      entity.id_produtos == null || 
-      entity.id_produtos.length == 0){
-        return res.json({ error: false, message: "Não há itens a serem buscados", erros: [] });
+    if (entity.id_produtos == undefined ||
+      entity.id_produtos == null ||
+      entity.id_produtos.length == 0) {
+      return res.json({ error: false, message: "Não há itens a serem buscados", erros: [] });
     }
 
     const filtro = entity.id_produtos.join(", ");
@@ -106,7 +113,7 @@ module.exports = {
       `, {
       type: QueryTypes.SELECT
     })
-    return res.json({lista: mercados});
+    return res.json({ lista: mercados });
   },
 };
 

@@ -22,7 +22,7 @@ routes.post("/v1/recuperarProdutosPorCategoriaMercado", ProdutoController.recupe
 const MercadoController = require("./src/controllers/MercadoController");
 
 routes.post("/v1/recuperarMercadPorProdutos", MercadoController.recuperarMercadPorProdutos)
-    .get("/v1/recuperarMercados", verifyJWT, MercadoController.recuperarMercados);
+    .post("/v1/recuperarMercados", verifyJWT, MercadoController.recuperarMercados);
 
 
 const UsuarioController = require("./src/controllers/UsuarioController");
