@@ -25,6 +25,14 @@ routes.post("/v1/recuperarMercadPorProdutos", MercadoController.recuperarMercadP
     .get("/v1/recuperarMercados", verifyJWT, MercadoController.recuperarMercados);
 
 
+const UsuarioController = require("./src/controllers/UsuarioController");
+
+routes.post("/v1/Usuarios", verifyJWT, UsuarioController.criarUsuario)
+    .put("/v1/Usuarios/:token_account", verifyJWT, UsuarioController.editarUsuario)
+    .get("/v1/Usuarios/:token_account", verifyJWT, UsuarioController.recuperarUsuario)
+    .post("/v1/login", verifyJWT, UsuarioController.login)
+    .delete("/v1/Usuarios/:token_account", verifyJWT, UsuarioController.deletarUsuario);
+
 
 const SecaoController = require("./src/controllers/SecaoController");
 routes.get("/v1/criarSecao", SecaoController.gerar);
