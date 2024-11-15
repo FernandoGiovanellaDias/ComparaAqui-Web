@@ -120,6 +120,9 @@ module.exports = {
 function validarMercado(mercado) {
   const erros = {};
 
+  if (mercado === null || mercado === undefined) {
+    return { error: true, message: "Não foi possível identificar os dados do mercado", erros: erros };
+  }
   if (
     mercado.name !== undefined &&
     mercado.name !== null &&
@@ -131,6 +134,7 @@ function validarMercado(mercado) {
   } else {
     erros["name"] = "O campo nome é obrigatório";
   }
+
 
 
   if (Object.keys(erros).length === 0) {

@@ -22,7 +22,11 @@ routes.post("/v1/recuperarProdutosPorCategoriaMercado", ProdutoController.recupe
 const MercadoController = require("./src/controllers/MercadoController");
 
 routes.post("/v1/recuperarMercadPorProdutos", MercadoController.recuperarMercadPorProdutos)
-    .post("/v1/recuperarMercados", verifyJWT, MercadoController.recuperarMercados);
+    .post("/v1/recuperarMercados", verifyJWT, MercadoController.recuperarMercados)
+    .post("/v1/Mercados", verifyJWT, MercadoController.criarMercado)
+    .put("/v1/Mercados/:id", verifyJWT, MercadoController.editarMercado)
+    .get("/v1/Mercados/:id", verifyJWT, MercadoController.recuperarMercado)
+    .delete("/v1/Mercados/:id", verifyJWT, MercadoController.deletarMercado);
 
 
 const UsuarioController = require("./src/controllers/UsuarioController");

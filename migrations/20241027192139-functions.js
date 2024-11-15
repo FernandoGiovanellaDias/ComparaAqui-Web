@@ -149,6 +149,48 @@ module.exports = {
             ALTER FUNCTION public.buscar_mercados_com_produtos(integer[])
                 OWNER TO postgres;
 
+            CREATE OR REPLACE PROCEDURE execute_generated_queries()
+            LANGUAGE plpgsql
+            AS $$
+            DECLARE
+                query_text TEXT;
+                query_cursor CURSOR FOR
+                    SELECT 'SELECT SETVAL(' ||
+                        quote_literal(quote_ident(PGT.schemaname) || '.' || quote_ident(S.relname)) ||
+                        ', COALESCE(MAX(' || quote_ident(C.attname) || '), 1) ) FROM ' ||
+                        quote_ident(PGT.schemaname) || '.' || quote_ident(T.relname) || ';'
+                    FROM pg_class AS S,
+                        pg_depend AS D,
+                        pg_class AS T,
+                        pg_attribute AS C,
+                        pg_tables AS PGT
+                    WHERE S.relkind = 'S'
+                    AND S.oid = D.objid
+                    AND D.refobjid = T.oid
+                    AND D.refobjid = C.attrelid
+                    AND D.refobjsubid = C.attnum
+                    AND T.relname = PGT.tablename
+                    ORDER BY S.relname;
+            BEGIN
+                -- Abrir o cursor
+                OPEN query_cursor;
+
+                -- Loop pelos resultados do cursor
+                LOOP
+                    FETCH query_cursor INTO query_text;
+                    EXIT WHEN NOT FOUND;
+
+                    -- Executar cada comando gerado
+                    RAISE NOTICE 'Executing: %', query_text; -- Para depuração (opcional)
+                    EXECUTE query_text;
+                END LOOP;
+
+                -- Fechar o cursor
+                CLOSE query_cursor;
+            END;
+            $$;
+
+
       `);
     },
 
