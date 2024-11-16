@@ -13,6 +13,9 @@ module.exports = {
       ],
       {}
     );
+    await queryInterface.sequelize.query(
+      'call execute_generated_queries();'
+    );
   },
 
   async down(queryInterface, Sequelize) {

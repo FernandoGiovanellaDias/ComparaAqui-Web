@@ -44,8 +44,12 @@ module.exports = {
         where: { id: req.params.id },
       });
 
+      if (!editMercado) {
+        return res.json({ error: true, message: "Mercado não encontrado" });
+      }
+
       Object.keys(entity).forEach(key => {
-        if (key != "id" && editMercado.hasOwnProperty(key)) {
+        if (key != "id" && editMercado.dataValues.hasOwnProperty(key)) {
           editMercado[key] = entity[key];
         }
       });
@@ -87,13 +91,21 @@ module.exports = {
     }
 
     let mercados = [];
-    mercados = await Mercado.findAll({ where: where });
+    mercados = await Mercado.findAll({ where: where, order: [["name", "asc"]]});
     return res.json(mercados);
   },
 
   async recuperarMercado(req, res) {
-    const mercados = await Mercado.findByPk(req.params.id);
-    return res.json(mercados);
+    try {
+      const mercados = await Mercado.findByPk(req.params.id);
+      if (!mercados) {
+        return res.json({ error: true, message: "Estabelecimento não encontrado", erros: [] });
+      }
+
+      return res.json({ error: false, message: "", erros: [], estabelecimento: mercados });
+    } catch (error) {
+      return res.json({ error: true, message: "Falha ao recuperar o estabelecimento", erros: [] });
+    }
   },
 
 
@@ -103,7 +115,7 @@ module.exports = {
     if (entity.id_produtos == undefined ||
       entity.id_produtos == null ||
       entity.id_produtos.length == 0) {
-      return res.json({ error: false, message: "Não há itens a serem buscados", erros: [] });
+      return res.json({ error: true, message: "Não há itens a serem buscados", erros: [] });
     }
 
     const filtro = entity.id_produtos.join(", ");
