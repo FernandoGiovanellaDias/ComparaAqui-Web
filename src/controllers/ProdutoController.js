@@ -1,11 +1,12 @@
-const { where, Sequelize } = require("sequelize");
-const { Produto, Usuario } = require("../../models");
+const { where, Sequelize, Op } = require("sequelize");
+const { Produto, Categoria, Mercado } = require("../../models");
 const moment = require("moment");
 
 
 module.exports = {
   async criarProduto(req, res) {
     let entity = req.body.produto;
+    entity.price = parseDinheiro(entity.price ?? "");
     let val = validarProduto(entity);
     if (val.error) {
       return res.json(val);
@@ -35,6 +36,7 @@ module.exports = {
 
   async editarProduto(req, res) {
     let entity = req.body.produto;
+    entity.price = parseDinheiro(entity.price ?? "");
     let val = validarProduto(entity);
     if (val.error) {
       return res.json(val);
@@ -44,8 +46,12 @@ module.exports = {
         where: { id: req.params.id },
       });
 
+      if (!editProduto) {
+        return res.json({ error: true, message: "Produto não encontrado" });
+      }
+
       Object.keys(entity).forEach(key => {
-        if (key != "id" && editProduto.hasOwnProperty(key)) {
+        if (key != "id" && editProduto.dataValues.hasOwnProperty(key)) {
           editProduto[key] = entity[key];
         }
       });
@@ -92,24 +98,24 @@ module.exports = {
 
     let whereProdutos = null;
     if (req.body.id_produtos) {
-      whereProdutos = Sequelize.literal(`name ILIKE ANY (obter_padroes_nome(array[${req.body.id_produtos.join(", ")}]))`);    
+      whereProdutos = Sequelize.literal(`name ILIKE ANY (obter_padroes_nome(array[${req.body.id_produtos.join(", ")}]))`);
     }
 
     let allWhere = whereProdutos
-        ? Sequelize.and(where, whereProdutos)
-        : where;
+      ? Sequelize.and(where, whereProdutos)
+      : where;
 
-    
+
     produtos = await Produto.findAll({
       attributes: [[Sequelize.literal('(array_agg("id"))[1]'), 'id'], 'name', [Sequelize.literal('(array_agg("description"))[1]'), 'description'], 'id_categoria'],
       where: allWhere,
       group: ['name', 'id_categoria']
     });
 
-    return res.json({lista: produtos});
+    return res.json({ lista: produtos });
   },
 
-  
+
   async detalhamentoPorMercado(req, res) {
     let produtos = [];
     let where = { status: true };
@@ -121,24 +127,62 @@ module.exports = {
 
     let whereProdutos = null;
     if (req.body.id_produtos) {
-      whereProdutos = Sequelize.literal(`name ILIKE ANY (obter_padroes_nome(array[${req.body.id_produtos.join(", ")}]))`);    
+      whereProdutos = Sequelize.literal(`name ILIKE ANY (obter_padroes_nome(array[${req.body.id_produtos.join(", ")}]))`);
     }
 
     let allWhere = whereProdutos
-        ? Sequelize.and(where, whereProdutos)
-        : where;
+      ? Sequelize.and(where, whereProdutos)
+      : where;
 
-    
+
     produtos = await Produto.findAll({
       where: allWhere
     });
 
-    return res.json({lista: produtos});
+    return res.json({ lista: produtos });
+  },
+
+
+
+  async recuperarProdutos(req, res) {
+    let entity = req.body;
+    let where = {};
+
+    if (entity.filtro !== undefined && entity.filtro !== null && entity.filtro.length > 0) {
+      where = { name: { [Op.iLike]: `%${entity.filtro}%` } };
+    }
+
+    let produtos = [];
+    produtos = await Produto.findAll({
+      where: where,
+      order: [["name", "asc"]],
+      include: [
+        {
+          model: Categoria,
+          as: 'categoria',
+          attributes: ['title'],
+        },
+        {
+          model: Mercado,
+          as: 'mercado',
+          attributes: ['name'],
+        }
+      ],
+    });
+    return res.json(produtos);
   },
 
   async recuperarProduto(req, res) {
-    const produtos = await Produto.findByPk(req.params.id);
-    return res.json(produtos);
+    try {
+      const produtos = await Produto.findByPk(req.params.id);
+      if (!produtos) {
+        return res.json({ error: true, message: "Produto não encontrada", erros: [] });
+      }
+
+      return res.json({ error: false, message: "", erros: [], produto: produtos });
+    } catch (error) {
+      return res.json({ error: true, message: "Falha ao recuperar a produto", erros: [] });
+    }
   },
 };
 
@@ -146,8 +190,26 @@ function isNumeric(value) {
   return (value == Number(value)) ? "number" : "string"
 }
 
+function parseDinheiro(value) {
+  if (value === null || value === undefined || value === "") return "";
+  return Number(`${value}`.replace(/\D/g, "")) / 100;
+};
+
 function validarProduto(produto) {
   const erros = {};
+
+  if (produto === null || produto === undefined) {
+    return { error: true, message: "Não foi possível identificar os dados do produto", erros: erros };
+  }
+
+  if (produto.id_categoria === undefined || produto.id_categoria === null) {
+    erros["id_categoria"] = "O campo categoria é obrigatório";
+  }
+
+  if (produto.id_mercado === undefined || produto.id_mercado === null) {
+    erros["id_mercado"] = "O campo mercado é obrigatório";
+  }
+
 
   if (
     produto.name !== undefined &&
@@ -166,14 +228,6 @@ function validarProduto(produto) {
     erros["price"] = "O campo preço é obrigatório";
   } else if (isNumeric(produto.price) != "number") {
     erros["price"] = "O campo preço precisa ser um valor numérico";
-  }
-
-  if (produto.id_categoria === undefined || produto.id_categoria === null) {
-    erros["id_categoria"] = "O campo categoria é obrigatório";
-  }
-
-  if (produto.id_mercado === undefined || produto.id_mercado === null) {
-    erros["id_mercado"] = "O campo mercado é obrigatório";
   }
 
 
