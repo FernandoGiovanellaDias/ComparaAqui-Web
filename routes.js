@@ -10,7 +10,12 @@ routes.use(cors());
 
 const CategoriaController = require("./src/controllers/CategoriaController");
 
-routes.get("/v1/recuperarCategorias", CategoriaController.recuperarCategorias);
+routes.get("/v1/recuperarCategorias", CategoriaController.recuperarCategoriasAtivas)
+    .post("/v1/buscarCategorias", verifyJWT, CategoriaController.recuperarCategorias)
+    .post("/v1/Categorias", verifyJWT, CategoriaController.criarCategoria)
+    .put("/v1/Categorias/:id", verifyJWT, CategoriaController.editarCategoria)
+    .get("/v1/Categorias/:id", verifyJWT, CategoriaController.recuperarCategoria)
+    .delete("/v1/Categorias/:id", verifyJWT, CategoriaController.deletarCategoria);
 
 
 const ProdutoController = require("./src/controllers/ProdutoController");

@@ -1,6 +1,7 @@
-const { where } = require("sequelize");
+const { where, Op } = require("sequelize");
 const { Categoria, Usuario } = require("../../models");
 const moment = require("moment");
+const { title } = require("process");
 
 
 module.exports = {
@@ -44,8 +45,12 @@ module.exports = {
         where: { id: req.params.id },
       });
 
+      if (!editCategoria) {
+        return res.json({ error: true, message: "Categoria não encontrado" });
+      }
+
       Object.keys(entity).forEach(key => {
-        if (key != "id" && editCategoria.hasOwnProperty(key)) {
+        if (key != "id" && editCategoria.dataValues.hasOwnProperty(key)) {
           editCategoria[key] = entity[key];
         }
       });
@@ -59,6 +64,7 @@ module.exports = {
     }
   },
 
+
   async deletarCategoria(req, res) {
     try {
       await Categoria.destroy({ where: { id: req.params.id } });
@@ -69,7 +75,7 @@ module.exports = {
     }
   },
 
-  async recuperarCategorias(req, res) {
+  async recuperarCategoriasAtivas(req, res) {
     let categorias = [];
     categorias = await Categoria.findAll({
       where: { status: true },
@@ -78,15 +84,43 @@ module.exports = {
     return res.json({lista : categorias});
   },
 
-  async recuperarCategoria(req, res) {
-    const categorias = await Categoria.findByPk(req.params.id);
+  
+  async recuperarCategorias(req, res) {
+    let entity = req.body;
+    let where = {};
+
+    if (entity.filtro !== undefined && entity.filtro !== null && entity.filtro.length > 0) {
+      where = { title: { [Op.iLike]: `%${entity.filtro}%` } };
+    }
+
+    let categorias = [];
+    categorias = await Categoria.findAll({ where: where, order: [["title", "asc"]]});
     return res.json(categorias);
   },
+
+
+  async recuperarCategoria(req, res) {
+    try {
+      const categorias = await Categoria.findByPk(req.params.id);
+      if (!categorias) {
+        return res.json({ error: true, message: "Categoria não encontrada", erros: [] });
+      }
+
+      return res.json({ error: false, message: "", erros: [], categoria: categorias });
+    } catch (error) {
+      return res.json({ error: true, message: "Falha ao recuperar a categoria", erros: [] });
+    }
+  },
+
+
 };
 
 function validarCategoria(categoria) {
   const erros = {};
 
+  if (categoria === null || categoria === undefined) {
+    return { error: true, message: "Não foi possível identificar os dados da categoria", erros: erros };
+  }
   if (
     categoria.title !== undefined &&
     categoria.title !== null &&
