@@ -51,6 +51,10 @@ routes.post("/v1/Usuarios", verifyJWT, UsuarioController.criarUsuario)
 const SecaoController = require("./src/controllers/SecaoController");
 routes.get("/v1/criarSecao", SecaoController.gerar);
 
+const UploadController = require("./src/controllers/UploadController");
+routes.post("/v1/Upload", verifyJWT, UploadController.uploadImage);
+
+
 
 module.exports = routes;
 

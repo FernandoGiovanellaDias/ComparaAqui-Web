@@ -16,7 +16,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             get() {
                 const icon = this.getDataValue('icon');
-                return icon;
+                if (icon) {
+                    const host = global.host || 'localhost:3000'; // Padrão ou global
+                    const protocol = global.protocol || 'http';  // Padrão ou global
+                    return `${protocol}://${host}/uploads/${icon}`;
+                }
+                return null;
             }
         },
         status: {
